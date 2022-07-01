@@ -5,28 +5,29 @@ int status;
 #define OK 1
 #define checkOK( x, y, z )                            \
 ({                                                    \
-    int result;                                       \
+    int result = NOT_OK;                              \
     if ( (x < y) && (x > z)) {                        \
         result = OK;                                  \
-    } else {                                          \
-        result = NOT_OK;                              \
     }                                                 \
+ //   } else {                                        \
+ //       result = NOT_OK;                            \
+  //  }                                               \
     result;                                           \
 })
 
 int isTemperatureOK(float temperature) {
-  status = checkOK(temperature, 0, 45);
-  return status;
+  return checkOK(temperature, 0, 45);
+ // return status;
 }
 
 int isSOCOK(float soc) {
-  status = checkOK(soc, 20, 80);
-  return status;
+  return checkOK(soc, 20, 80);
+ // return status;
 }
 
 int isChargeRateOK(float chargeRate) {
-  status = checkOK(chargeRate, 1, 0.8);
-  return status;
+  return checkOK(chargeRate, 1, 0.8);
+  //return status;
 }
 
 int batteryIsOk(float temperature, float soc, float chargeRate) {

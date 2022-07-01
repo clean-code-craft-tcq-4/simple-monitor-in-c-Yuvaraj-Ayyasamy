@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
-int status
+int status;
 #define NOT_OK 0
 #define OK 1
 #define checkOK( x, y, z ) if( x < y || x > z) { OK } else { NOT_OK}

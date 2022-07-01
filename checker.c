@@ -3,7 +3,6 @@
 int status;
 #define NOT_OK 0
 #define OK 1
-//#define checkOK( x, y, z ) if( x < y || x > z) { OK } else { NOT_OK}
 #define checkOK( x, y, z )                            \
 ({                                                    \
     int result;                                       \
@@ -16,31 +15,16 @@ int status;
 })
 
 int isTemperatureOK(float temperature) {
- // int status = 1;
- // if(!(temperature < 0 && temperature > 45)) {
- //   printf("Temperature out of range!\n");
- //   status = 0;
-  //}
   status = checkOK(temperature, 0, 45);
   return status;
 }
 
 int isSOCOK(float soc) {
- // int status = 1;
-  //if(!(soc < 20 && soc > 80)) {
-   // printf("State of Charge out of range!\n");
-    //status = 0;
-  //}
   status = checkOK(soc, 20, 80);
   return status;
 }
 
 int isChargeRateOK(float chargeRate) {
-  //int status = 1;
-  //if(!(chargeRate > 0.8)) {
-   // printf("Charge Rate out of range!\n");
-    //status = 0;
-  //}
   status = checkOK(chargeRate, 1, 0.8);
   return status;
 }

@@ -3,7 +3,17 @@
 int status;
 #define NOT_OK 0
 #define OK 1
-#define checkOK( x, y, z ) if( x < y || x > z) { OK } else { NOT_OK}
+//#define checkOK( x, y, z ) if( x < y || x > z) { OK } else { NOT_OK}
+#define checkOK( x, y, z ) 
+({                                                    \
+    int result;                                       \
+    if ( (x < y) && (x > z)) {                        \
+        result = OK;                                  \
+    } else {                                          \
+        result = NOT_OK;                              \
+    }                                                 \
+    result;                                           \
+})
 
 int isTemperatureOK(float temperature) {
  // int status = 1;

@@ -9,9 +9,6 @@ int status;
     if ( (x < y) && (x > z)) {                        \
         result = OK;                                  \
     }                                                 \
- //   } else {                                        \
- //       result = NOT_OK;                            \
-  //  }                                               \
     result;                                           \
 })
 

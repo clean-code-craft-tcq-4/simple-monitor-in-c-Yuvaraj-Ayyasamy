@@ -6,8 +6,8 @@
 
 typedef enum 
 {
-  TEMPERATURE_RANGE = 0,
-  SOC_RANGE,
+  TEMPERATURE = 0,
+  SOC,
   CHARGE_RATE,
 }batteryFactors_e;
 

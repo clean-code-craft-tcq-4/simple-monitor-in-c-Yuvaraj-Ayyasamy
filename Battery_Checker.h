@@ -4,12 +4,27 @@
 #define NOT_OK 0
 #define OK     1
 
-int status;
+typedef enum 
+{
+  TEMPERATURE,
+  SOC,
+  CHARGE_RATE,
+  MAX_FACTORS
+}batteryFactor_e;
 
-#define checkOK( currentValue, minRange, maxRange )                 \
+typedef struct
+{
+  //int status;
+  float minRange;
+  float maxRange;
+}batteryCheckFactors;
+
+batteryCheckFactors batteryCheck[MAX_FACTORS] = {0};
+
+#define checkOK( currentFactor, currentValue )                 \
 ({                                                                  \
     int checkResult = NOT_OK;                                       \
-    if ( (currentValue < minRange) && (currentValue > maxRange)) {  \
+    if ( (currentValue < batteryCheck[currentFactor].minRange) && (currentValue > batteryCheck[currentFactor].maxRange)) {  \
         checkResult = OK;                                           \
     }                                                               \
     checkResult;                                                    \

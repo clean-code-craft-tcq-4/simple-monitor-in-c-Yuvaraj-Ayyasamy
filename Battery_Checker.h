@@ -7,7 +7,7 @@
  #define checkOK( currentValue, minRange, maxRange )                 \
 ({                                                                  \
     int checkResult = NOT_OK;                                       \
-    if ( (currentValue < minRange) && (currentValue > maxRange)) {  \
+    if ( (currentValue > minRange) && (currentValue < maxRange)) {  \
         checkResult = OK;                                           \
     }                                                               \
     checkResult;                                                    \

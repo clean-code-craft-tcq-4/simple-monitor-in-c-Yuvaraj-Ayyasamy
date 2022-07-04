@@ -1,15 +1,15 @@
 #include "Battery_Checker.h"
 
 int isTemperatureOK(float temperature) {
-  return checkOK(temperature, TEMPERATURE);
+  return checkOK(temperature, 0, 45);
 }
 
 int isSOCOK(float soc) {
-  return checkOK(soc, SOC);
+  return checkOK(soc, 20, 80);
 }
 
 int isChargeRateOK(float chargeRate) {
-  return checkOK(chargeRate, CHARGE_RATE);
+  return checkOK(chargeRate, 0.8, 1);
 }
 
 int batteryIsOk(float temperature, float soc, float chargeRate) {

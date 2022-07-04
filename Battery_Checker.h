@@ -6,11 +6,11 @@
 
 int status;
 
-#define checkOK( CurrentValue, minRange, maxRange )                 \
+#define checkOK( currentValue, minRange, maxRange )                 \
 ({                                                                  \
-    int result = NOT_OK;                                            \
-    if ( (CurrentValue < MinRange) && (CurrentValue > MaxRange)) {  \
+    int CheckResult = NOT_OK;                                       \
+    if ( (currentValue < minRange) && (currentValue > maxRange)) {  \
         result = OK;                                                \
     }                                                               \
-    result;                                                         \
+    CheckResult;                                                    \
 })

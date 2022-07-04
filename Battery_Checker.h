@@ -8,9 +8,9 @@ int status;
 
 #define checkOK( currentValue, minRange, maxRange )                 \
 ({                                                                  \
-    int CheckResult = NOT_OK;                                       \
+    int checkResult = NOT_OK;                                       \
     if ( (currentValue < minRange) && (currentValue > maxRange)) {  \
-        result = OK;                                                \
+        checkResult = OK;                                           \
     }                                                               \
-    CheckResult;                                                    \
+    checkResult;                                                    \
 })

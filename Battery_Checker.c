@@ -1,8 +1,6 @@
-
-
+#include "Battery_Checker.h"
 
 int isTemperatureOK(float temperature) {
-  
   return checkOK(temperature, TEMPERATURE);
 }
 

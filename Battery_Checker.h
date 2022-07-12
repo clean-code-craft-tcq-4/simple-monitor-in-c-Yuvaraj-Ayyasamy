@@ -84,17 +84,23 @@ float bmsFactorRanges[15][2]={
     int checkResult = NOT_OK;                                      \
     if (ISLOWLIMITBREACH(currentValue, currentFactor)) {           \
         THROW_WARNING(LOW_BREACH, currentFactor);                  \
-    }else if(ISLOWLIMITWARNING(currentValue, currentFactor)) {     \
+        checkResult = OK;                                          \
+    }                                                              \
+    if(ISLOWLIMITWARNING(currentValue, currentFactor)) {           \
         THROW_WARNING(LOW_WARNING, currentFactor);                 \
-        checkResult = OK;                                          \
-    }else if(ISNORMALLIMIT(currentValue, currentFactor)) {         \
+        checkResult &= OK;                                         \
+    }                                                              \
+    if(ISNORMALLIMIT(currentValue, currentFactor)) {               \
         THROW_WARNING(NORMAL_STATE, currentFactor);                \
-        checkResult = OK;                                          \
-    }else if(ISHIGHLIMITWARNING(currentValue, currentFactor)) {    \
+        checkResult &= OK;                                         \
+    }                                                              \
+    if(ISHIGHLIMITWARNING(currentValue, currentFactor)) {          \
         THROW_WARNING(HIGH_WARNING, currentFactor);                \
-        checkResult = OK;                                          \
-    }else {                                                        \
+        checkResult &= OK;                                         \
+    }                                                              \
+    if(ISHIGHLIMITBREACH(currentValue, currentFactor)) {           \
         THROW_WARNING(HIGH_BREACH, currentFactor);                 \
+        checkResult &= OK;                                         \
     }                                                              \
     checkResult;                                                   \
 })

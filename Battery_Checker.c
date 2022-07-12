@@ -1,15 +1,17 @@
-#include "Battery_Checker.h"
+
+
 
 int isTemperatureOK(float temperature) {
-  return checkOK(temperature, 0, 45);
+  
+  return checkOK(temperature, TEMPERATURE);
 }
 
 int isSOCOK(float soc) {
-  return checkOK(soc, 20, 80);
+  return checkOK(soc, SOC);
 }
 
 int isChargeRateOK(float chargeRate) {
-  return checkOK(chargeRate, 0.8, 1);
+  return checkOK(chargeRate, CHARGERATE);
 }
 
 int batteryIsOk(float temperature, float soc, float chargeRate) {
@@ -23,10 +25,10 @@ int main() {
   /* Only Temp value outside range */
   assert(!batteryIsOk(50, 70, 0.9));
   
-    /* Only SOC value outside range */
+  /* Only SOC value outside range */
   assert(!batteryIsOk(30, 85, 0.9));
   
-    /* Only Charge Rate outside range */
+  /* Only Charge Rate outside range */
   assert(!batteryIsOk(40, 70, 0.7));
   
   /* All Temp, SOC & Charge Rate values are outside range */

@@ -81,10 +81,10 @@ float bmsFactorRanges[15][2]={
 
 #define checkOK(currentValue, currentFactor)                       \
 ({                                                                 \
-    int checkResult = NOT_OK;                                      \
+    int checkResult = OK;                                          \
     if (ISLOWLIMITBREACH(currentValue, currentFactor)) {           \
         THROW_WARNING(LOW_BREACH, currentFactor);                  \
-        checkResult = OK;                                          \
+        checkResult = NOT_OK;                                      \
     }                                                              \
     if(ISLOWLIMITWARNING(currentValue, currentFactor)) {           \
         THROW_WARNING(LOW_WARNING, currentFactor);                 \
@@ -100,7 +100,7 @@ float bmsFactorRanges[15][2]={
     }                                                              \
     if(ISHIGHLIMITBREACH(currentValue, currentFactor)) {           \
         THROW_WARNING(HIGH_BREACH, currentFactor);                 \
-        checkResult &= OK;                                         \
+        checkResult &= NOT_OK;                                     \
     }                                                              \
     checkResult;                                                   \
 })

@@ -20,18 +20,85 @@ enum BMSValueRange {
  HIGH_BREACH
 };
 
+#define TOLERANCE_PERCENTAGE           5
+#define TEMP_LOW_LIMIT                 (float)0
+#define TEMP_HIGH_LIMIT                (float)45
+#define TEMP_TOLERANCE_LIMIT           (float)((TEMP_HIGH_LIMIT * TOLERANCE_PERCENTAGE)/100)
+#define TEMP_LOW_BREACH_LOWLIMIT       (float)-30
+#define TEMP_LOW_BREACH_HIGHLIMIT      (float)(TEMP_LOW_LIMIT)
+#define TEMP_LOW_WARNING_LOWLIMIT      (float)(TEMP_LOW_LIMIT + 1)
+#define TEMP_LOW_WARNING_HIGHLIMIT     (float)(TEMP_LOW_LIMIT + TEMP_TOLERANCE_LIMIT)
+#define TEMP_NORMAL_LOWLIMIT           (float)(TEMP_LOW_WARNING_HIGHLIMIT + 1)
+#define TEMP_HIGH_WARNING_LOWLIMIT     (float)(TEMP_HIGH_LIMIT - TEMP_TOLERANCE_LIMIT)
+#define TEMP_NORMAL_HIGHLIMIT          (float)(TEMP_HIGH_WARNING_LOWLIMIT - 1)
+#define TEMP_HIGH_WARNING_HIGHLIMIT    (float)(TEMP_HIGH_LIMIT)
+#define TEMP_HIGH_BREACH_LOWLIMIT      (float)(TEMP_HIGH_LIMIT + 1)
+#define TEMP_HIGH_BREACH_HIGHLIMIT     (float)63
+
+#define SOC_LOW_LIMIT                  (float)20
+#define SOC_HIGH_LIMIT                 (float)80
+#define SOC_TOLERANCE_LIMIT            (float)((SOC_HIGH_LIMIT * TOLERANCE_PERCENTAGE)/100)
+#define SOC_LOW_BREACH_LOWLIMIT        (float)0
+#define SOC_LOW_BREACH_HIGHLIMIT       (float)(SOC_LOW_LIMIT)
+#define SOC_LOW_WARNING_LOWLIMIT       (float)(SOC_LOW_LIMIT + 1)
+#define SOC_LOW_WARNING_HIGHLIMIT      (float)(SOC_LOW_LIMIT + SOC_TOLERANCE_LIMIT)
+#define SOC_NORMAL_LOWLIMIT            (float)(SOC_LOW_WARNING_HIGHLIMIT + 1)
+#define SOC_HIGH_WARNING_LOWLIMIT      (float)(SOC_HIGH_LIMIT - SOC_TOLERANCE_LIMIT)
+#define SOC_NORMAL_HIGHLIMIT           (float)(SOC_HIGH_WARNING_LOWLIMIT - 1)
+#define SOC_HIGH_WARNING_HIGHLIMIT     (float)(SOC_HIGH_LIMIT)
+#define SOC_HIGH_BREACH_LOWLIMIT       (float)(SOC_HIGH_LIMIT + 1)
+#define SOC_HIGH_BREACH_HIGHLIMIT      (float)100
+
+#define CR_LOW_LIMIT                   (float)0.8
+#define CR_HIGH_LIMIT                  (float)1.0
+#define CR_TOLERANCE_LIMIT             (float)(CR_HIGH_LIMIT * TOLERANCE_PERCENTAGE)/100
+#define CR_LOW_BREACH_LOWLIMIT         (float)0
+#define CR_LOW_BREACH_HIGHLIMIT        (float)(CR_LOW_LIMIT)
+#define CR_LOW_WARNING_LOWLIMIT        (float)(CR_LOW_LIMIT + 1)
+#define CR_LOW_WARNING_HIGHLIMIT       (float)(CR_LOW_LIMIT + CR_TOLERANCE_LIMIT)
+#define CR_NORMAL_LOWLIMIT             (float)(CR_LOW_WARNING_HIGHLIMIT + 1)
+#define CR_HIGH_WARNING_LOWLIMIT       (float)(CR_HIGH_LIMIT - CR_TOLERANCE_LIMIT)
+#define CR_NORMAL_HIGHLIMIT            (float)(CR_HIGH_WARNING_LOWLIMIT - 1)
+#define CR_HIGH_WARNING_HIGHLIMIT      (float)(CR_HIGH_LIMIT)
+#define CR_HIGH_BREACH_LOWLIMIT        (float)(CR_HIGH_LIMIT + 1)
+#define CR_HIGH_BREACH_HIGHLIMIT       (float)1.2
+
 float bmsFactorRanges[15][2]={
 /*Temperature*/
- /*Low Breach   Low Warning   Normal     High Warning   Hign Breach*/
-   {-30, -1},    {0, 15},    {16, 30},      {31, 45},     {46, 63}, 
+   /* Low Breach */
+   {TEMP_LOW_BREACH_LOWLIMIT, TEMP_LOW_BREACH_HIGHLIMIT},
+   /* Low Warning */
+   {TEMP_LOW_WARNING_LOWLIMIT, TEMP_LOW_WARNING_HIGHLIMIT},
+   /* Normal Range */
+   {TEMP_NORMAL_LOWLIMIT, TEMP_NORMAL_HIGHLIMIT},
+   /* High Warning */
+   {TEMP_HIGH_WARNING_LOWLIMIT, TEMP_HIGH_WARNING_HIGHLIMIT},
+   /* Hign Breach */
+   {TEMP_HIGH_BREACH_LOWLIMIT, TEMP_HIGH_BREACH_HIGHLIMIT},
 
 /*SOC*/
- /*Low Breach   Low Warning   Normal     High Warning   Hign Breach*/
-   {1, 20},      {21, 24},   {25, 75},     {76, 80},       {81, 100},
+   /* Low Breach */
+   {SOC_LOW_BREACH_LOWLIMIT, SOC_LOW_BREACH_HIGHLIMIT},
+   /* Low Warning */
+   {SOC_LOW_WARNING_LOWLIMIT, SOC_LOW_WARNING_HIGHLIMIT},
+   /* Normal Range */
+   {SOC_NORMAL_LOWLIMIT, SOC_NORMAL_HIGHLIMIT},
+   /* High Warning */
+   {SOC_HIGH_WARNING_LOWLIMIT, SOC_HIGH_WARNING_HIGHLIMIT},
+   /* Hign Breach */
+   {SOC_HIGH_BREACH_LOWLIMIT, SOC_HIGH_BREACH_HIGHLIMIT},
 
 /*Charge Rate*/
- /*Low Breach   Low Warning    Normal     High Warning   Hign Breach*/
-   {0, 0.7},     {0.8, 0.8}, {0.9, 0.9},   {1.0, 1.0},     {1.1, 1.2},
+   /* Low Breach */
+   {CR_LOW_BREACH_LOWLIMIT, CR_LOW_BREACH_HIGHLIMIT},
+   /* Low Warning */
+   {CR_LOW_WARNING_LOWLIMIT, CR_LOW_WARNING_HIGHLIMIT},
+   /* Normal Range */
+   {CR_NORMAL_LOWLIMIT, CR_NORMAL_HIGHLIMIT},
+   /* High Warning */
+   {CR_HIGH_WARNING_LOWLIMIT, CR_HIGH_WARNING_HIGHLIMIT},
+   /* Hign Breach */
+   {CR_HIGH_BREACH_LOWLIMIT, CR_HIGH_BREACH_HIGHLIMIT},
 };
 
 #define MSG_LOW_BREACH     "Error: Complete Low"
@@ -39,6 +106,7 @@ float bmsFactorRanges[15][2]={
 #define MSG_NORMAL_STATE   "OK: Normal"
 #define MSG_HIGH_WARNING   "Warning: Approaching peak"
 #define MSG_HIGH_BREACH    "Error: Peaked"
+#define MSG_OUT_OF_BOX     "Error: Value out of range"
 
 #define Print(message) MSG_##message              
 
@@ -85,21 +153,20 @@ float bmsFactorRanges[15][2]={
     if (ISLOWLIMITBREACH(currentValue, currentFactor)) {           \
         THROW_WARNING(LOW_BREACH, currentFactor);                  \
         checkResult = NOT_OK;                                      \
-    }                                                              \
-    if(ISLOWLIMITWARNING(currentValue, currentFactor)) {           \
+    } else if(ISLOWLIMITWARNING(currentValue, currentFactor)) {    \
         THROW_WARNING(LOW_WARNING, currentFactor);                 \
         checkResult &= OK;                                         \
-    }                                                              \
-    if(ISNORMALLIMIT(currentValue, currentFactor)) {               \
+    } else if(ISNORMALLIMIT(currentValue, currentFactor)) {        \
         THROW_WARNING(NORMAL_STATE, currentFactor);                \
         checkResult &= OK;                                         \
-    }                                                              \
-    if(ISHIGHLIMITWARNING(currentValue, currentFactor)) {          \
+    } else if(ISHIGHLIMITWARNING(currentValue, currentFactor)) {   \
         THROW_WARNING(HIGH_WARNING, currentFactor);                \
         checkResult &= OK;                                         \
-    }                                                              \
-    if(ISHIGHLIMITBREACH(currentValue, currentFactor)) {           \
+    } else if(ISHIGHLIMITBREACH(currentValue, currentFactor)) {    \
         THROW_WARNING(HIGH_BREACH, currentFactor);                 \
+        checkResult &= NOT_OK;                                     \
+    } else {                                                       \
+        THROW_WARNING(OUT_OF_BOX, currentFactor);                  \
         checkResult &= NOT_OK;                                     \
     }                                                              \
     checkResult;                                                   \
